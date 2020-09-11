@@ -22,12 +22,28 @@ class Chatroom {
         const response = await this.chats.add(chat);
         return response;
     }
+    getCharts(callback) {
+        this.chats
+            .onSnapshot(snapshot => {
+                snapshot.docChanges().forEach(change => {
+                    if (change.type === 'added') {
+                        // update ui
+                        callback(change.doc.data());
+                    }
+                });
+            });
+    }
 }
+
 
 const chatroom = new Chatroom('gaming', 'chaw');
 // console.log(chatroom);
 
-chatroom.addChat('Assalamualikum')
-    .then(() => console.log('chat added'))
-    .catch(err => console.log(err));
+chatroom.getCharts((data) => {
+    console.log(data);
+})
+
+// chatroom.addChat('Assalamualikum')
+//     .then(() => console.log('chat added'))
+//     .catch(err => console.log(err));
 
